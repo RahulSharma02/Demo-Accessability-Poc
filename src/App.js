@@ -1,24 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect } from "react";
+import Form from "./forms";
+import { useTheme } from "pocdemo";
+import "pocdemo/src/App.css";
+import "pocdemo/src/lib/components/styles/theme.css";
 
 function App() {
+  const { setTheme, setFontSize, getFontValue, getThemeValue } = useTheme();
+  const theme = getThemeValue();
+  const zoom = getFontValue();
+  const keydownHandler = (e) => {
+    e.preventDefault();
+    if (e.keyCode === 32) {
+      setTheme();
+    }
+    if (e.keyCode === 38 || e.keyCode === 40) {
+      setFontSize();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", keydownHandler);
+    return () => {
+      document.removeEventListener("keydown", keydownHandler);
+    };
+  }, [theme, zoom]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <div className={`App ${theme}`}>
+        <header className={`App-header ${zoom}`}>
+          <h2>Hello, I am Accessability POC </h2>
+          <Form />
+        </header>
+      </div>
+    </>
   );
 }
 
